@@ -16,487 +16,487 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @TestMethodOrder(OrderAnnotation.class)
 public class TestRPC {
 
-	private static int PORT = 8080;
-	private static String SERVER = "localhost";
+    private static int PORT = 8080;
+    private static String SERVER = "localhost";
 
-	@Test
-	@Order(1)
-	public void testStartStop() {
+    @Test
+    @Order(1)
+    public void testStartStop() {
 
-		AtomicBoolean failure = new AtomicBoolean(false);
+        AtomicBoolean failure = new AtomicBoolean(false);
 
-		RPCClient client = new RPCClient(SERVER, PORT);
-		RPCServer server = new RPCServer(PORT);
+        RPCClient client = new RPCClient(SERVER, PORT);
+        RPCServer server = new RPCServer(PORT);
 
-		Thread serverthread = new Thread() {
+        Thread serverthread = new Thread() {
 
-			public void run() {
+            public void run() {
 
-				try {
-					server.run();
-				} catch (Exception e) {
-					e.printStackTrace();
-					failure.set(true);
+                try {
+                    server.run();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    failure.set(true);
 
-				} finally {
-					server.stop();
-				}
-			}
-		};
+                } finally {
+                    server.stop();
+                }
+            }
+        };
 
-		Thread clientthread = new Thread() {
+        Thread clientthread = new Thread() {
 
-			public void run() {
+            public void run() {
 
-				try {
-					client.connect();
+                try {
+                    client.connect();
 
-					RPCClientStopStub stub = new RPCClientStopStub(client);
+                    RPCClientStopStub stub = new RPCClientStopStub(client);
 
-					stub.stop();
+                    stub.stop();
 
-					client.disconnect();
-				} catch (Exception e) {
-					e.printStackTrace();
-					failure.set(true);
-				}
-			}
-		};
+                    client.disconnect();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    failure.set(true);
+                }
+            }
+        };
 
-		System.out.println("System starting ... ");
+        System.out.println("System starting ... ");
 
-		try {
+        try {
 
-			serverthread.start();
-			clientthread.start();
+            serverthread.start();
+            clientthread.start();
 
-			serverthread.join();
-			clientthread.join();
+            serverthread.join();
+            clientthread.join();
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		} finally {
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        } finally {
 
-			System.out.println("System stopping ... ");
-			
-			if (failure.get()) {
-				fail();
-			}
-		}
+            System.out.println("System stopping ... ");
 
-	}
+            if (failure.get()) {
+                fail();
+            }
+        }
 
-	@Test
-	@Order(2)
-	public void testVoidCall() {
+    }
 
-		RPCClient client = new RPCClient(SERVER, PORT);
-		RPCServer server = new RPCServer(PORT);
+    @Test
+    @Order(2)
+    public void testVoidCall() {
 
-		AtomicBoolean failure = new AtomicBoolean(false);
-		
-		Thread serverthread = new Thread() {
+        RPCClient client = new RPCClient(SERVER, PORT);
+        RPCServer server = new RPCServer(PORT);
 
-			public void run() {
+        AtomicBoolean failure = new AtomicBoolean(false);
 
-				try {
-					TestVoidVoidImpl voidvoidimpl = new TestVoidVoidImpl((byte) 1, server);
+        Thread serverthread = new Thread() {
 
-					server.run();
-				} catch (Exception e) {
-					e.printStackTrace();
-					failure.set(true);
-				} finally {
-					server.stop();
-				}
-			}
-		};
+            public void run() {
 
-		Thread clientthread = new Thread() {
+                try {
+                    TestVoidVoidImpl voidvoidimpl = new TestVoidVoidImpl((byte) 1, server);
 
-			public void run() {
+                    server.run();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    failure.set(true);
+                } finally {
+                    server.stop();
+                }
+            }
+        };
 
-				try {
-					client.connect();
+        Thread clientthread = new Thread() {
 
-					RPCClientStopStub stopstub = new RPCClientStopStub(client);
-					TestVoidVoidStub voidvoidstub = new TestVoidVoidStub(client);
+            public void run() {
 
-					// void test case
-					voidvoidstub.m();
+                try {
+                    client.connect();
 
-					assertTrue(true); // just check that we complete call
-					stopstub.stop();
+                    RPCClientStopStub stopstub = new RPCClientStopStub(client);
+                    TestVoidVoidStub voidvoidstub = new TestVoidVoidStub(client);
 
-					client.disconnect();
-				} catch (Exception e) {
-					e.printStackTrace();
-					failure.set(true);
-				}
+                    // void test case
+                    voidvoidstub.m();
 
-			}
-		};
+                    assertTrue(true); // just check that we complete call
+                    stopstub.stop();
 
-		System.out.println("System starting ... ");
+                    client.disconnect();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    failure.set(true);
+                }
 
-		try {
+            }
+        };
 
-			serverthread.start();
-			clientthread.start();
+        System.out.println("System starting ... ");
 
-			serverthread.join();
-			clientthread.join();
+        try {
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		} finally {
-			
-			System.out.println("System stopping ... ");
+            serverthread.start();
+            clientthread.start();
 
-			if (failure.get()) {
-				fail();
-			}
-		}
-	}
+            serverthread.join();
+            clientthread.join();
 
-	@Test
-	@Order(3)
-	public void testStringCall() {
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        } finally {
 
-		RPCClient client = new RPCClient(SERVER, PORT);
-		RPCServer server = new RPCServer(PORT);
+            System.out.println("System stopping ... ");
 
-		AtomicBoolean failure = new AtomicBoolean(false);
-		
-		Thread serverthread = new Thread() {
+            if (failure.get()) {
+                fail();
+            }
+        }
+    }
 
-			public void run() {
+    @Test
+    @Order(3)
+    public void testStringCall() {
 
-				try {
+        RPCClient client = new RPCClient(SERVER, PORT);
+        RPCServer server = new RPCServer(PORT);
 
-					TestStringStringImpl stringstringimpl = new TestStringStringImpl((byte) 2, server);
+        AtomicBoolean failure = new AtomicBoolean(false);
 
-					server.run();
-				} catch (Exception e) {
-					e.printStackTrace();
-					failure.set(true);
-				} finally {
-					server.stop();
-				}
-			}
-		};
+        Thread serverthread = new Thread() {
 
-		Thread clientthread = new Thread() {
+            public void run() {
 
-			public void run() {
+                try {
 
-				try {
-					client.connect();
+                    TestStringStringImpl stringstringimpl = new TestStringStringImpl((byte) 2, server);
 
-					RPCClientStopStub stopstub = new RPCClientStopStub(client);
-					TestStringStringStub stringstringstub = new TestStringStringStub(client);
+                    server.run();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    failure.set(true);
+                } finally {
+                    server.stop();
+                }
+            }
+        };
 
-					// string test case
-					String teststr = "string";
-					String resstr = stringstringstub.m(teststr);
+        Thread clientthread = new Thread() {
 
-					assertEquals(teststr + teststr, resstr);
+            public void run() {
 
-					stopstub.stop();
+                try {
+                    client.connect();
 
-					client.disconnect();
-				} catch (Exception e) {
-					e.printStackTrace();
-					failure.set(true);
-				}
+                    RPCClientStopStub stopstub = new RPCClientStopStub(client);
+                    TestStringStringStub stringstringstub = new TestStringStringStub(client);
 
-			}
-		};
+                    // string test case
+                    String teststr = "string";
+                    String resstr = stringstringstub.m(teststr);
 
-		System.out.println("System starting ... ");
+                    assertEquals(teststr + teststr, resstr);
 
-		try {
+                    stopstub.stop();
 
-			serverthread.start();
-			clientthread.start();
+                    client.disconnect();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    failure.set(true);
+                }
 
-			serverthread.join();
-			clientthread.join();
+            }
+        };
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		} finally {
+        System.out.println("System starting ... ");
 
-			System.out.println("System stopping ... ");
-			
-			if (failure.get()) {
-				fail();
-			}
-		}
-	}
+        try {
 
-	@Test
-	@Order(4)
-	public void testIntCall() {
+            serverthread.start();
+            clientthread.start();
 
-		RPCClient client = new RPCClient(SERVER, PORT);
-		RPCServer server = new RPCServer(PORT);
+            serverthread.join();
+            clientthread.join();
 
-		AtomicBoolean failure = new AtomicBoolean(false);
-		
-		Thread serverthread = new Thread() {
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        } finally {
 
-			public void run() {
+            System.out.println("System stopping ... ");
 
-				try {
-					TestIntIntImpl intintimpl = new TestIntIntImpl((byte) 3, server);
+            if (failure.get()) {
+                fail();
+            }
+        }
+    }
 
-					server.run();
-				} catch (Exception e) {
-					e.printStackTrace();
-					failure.set(true);
-				} finally {
-					server.stop();
-				}
-			}
-		};
+    @Test
+    @Order(4)
+    public void testIntCall() {
 
-		Thread clientthread = new Thread() {
+        RPCClient client = new RPCClient(SERVER, PORT);
+        RPCServer server = new RPCServer(PORT);
 
-			public void run() {
+        AtomicBoolean failure = new AtomicBoolean(false);
 
-				try {
-					client.connect();
+        Thread serverthread = new Thread() {
 
-					RPCClientStopStub stopstub = new RPCClientStopStub(client);
-					TestIntIntStub intintstub = new TestIntIntStub(client);
+            public void run() {
 
-					// int test case
-					int x = 42;
-					int resx = intintstub.m(x);
+                try {
+                    TestIntIntImpl intintimpl = new TestIntIntImpl((byte) 3, server);
 
-					assertEquals(x, resx);
+                    server.run();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    failure.set(true);
+                } finally {
+                    server.stop();
+                }
+            }
+        };
 
-					stopstub.stop();
+        Thread clientthread = new Thread() {
 
-					client.disconnect();
-				} catch (Exception e) {
-					e.printStackTrace();
-					failure.set(true);
-				}
+            public void run() {
 
-			}
-		};
+                try {
+                    client.connect();
 
-		System.out.println("System starting ... ");
+                    RPCClientStopStub stopstub = new RPCClientStopStub(client);
+                    TestIntIntStub intintstub = new TestIntIntStub(client);
 
-		try {
+                    // int test case
+                    int x = 42;
+                    int resx = intintstub.m(x);
 
-			serverthread.start();
-			clientthread.start();
+                    assertEquals(x, resx);
 
-			serverthread.join();
-			clientthread.join();
+                    stopstub.stop();
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		} finally {
+                    client.disconnect();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    failure.set(true);
+                }
 
-			System.out.println("System stopping ... ");
-			
-			if (failure.get()) {
-				fail();
-			}
-		}
-	}
+            }
+        };
 
-	@Test
-	@Order(5)
-	public void testBoolCall() {
+        System.out.println("System starting ... ");
 
-		RPCClient client = new RPCClient(SERVER, PORT);
-		RPCServer server = new RPCServer(PORT);
+        try {
 
-		AtomicBoolean failure = new AtomicBoolean(false);
-		
-		Thread serverthread = new Thread() {
+            serverthread.start();
+            clientthread.start();
 
-			public void run() {
+            serverthread.join();
+            clientthread.join();
 
-				try {
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        } finally {
 
-					TestBooleanBooleanImpl boolboolimpl = new TestBooleanBooleanImpl((byte) 4, server);
+            System.out.println("System stopping ... ");
 
-					server.run();
+            if (failure.get()) {
+                fail();
+            }
+        }
+    }
 
-				} catch (Exception e) {
-					e.printStackTrace();
-					failure.set(true);
-				} finally {
-					server.stop();
-				}
-			}
-		};
+    @Test
+    @Order(5)
+    public void testBoolCall() {
 
-		Thread clientthread = new Thread() {
+        RPCClient client = new RPCClient(SERVER, PORT);
+        RPCServer server = new RPCServer(PORT);
 
-			public void run() {
+        AtomicBoolean failure = new AtomicBoolean(false);
 
-				RPCClientStopStub stopstub = null;
+        Thread serverthread = new Thread() {
 
-				try {
-					client.connect();
+            public void run() {
 
-					stopstub = new RPCClientStopStub(client);
-					TestBooleanBooleanStub boolboolstub = new TestBooleanBooleanStub(client);
+                try {
 
-					// boolean test case
+                    TestBooleanBooleanImpl boolboolimpl = new TestBooleanBooleanImpl((byte) 4, server);
 
-					boolean testb = true;
-					boolean resb = boolboolstub.m(testb);
+                    server.run();
 
-					assertEquals(!testb, resb);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    failure.set(true);
+                } finally {
+                    server.stop();
+                }
+            }
+        };
 
-					testb = false;
-					resb = boolboolstub.m(testb);
-					assertEquals(!testb, resb);
+        Thread clientthread = new Thread() {
 
-					stopstub.stop();
+            public void run() {
 
-					client.disconnect();
+                RPCClientStopStub stopstub = null;
 
-				} catch (Exception e) {
-					e.printStackTrace();
-					failure.set(true);
-				}
-			}
-		};
+                try {
+                    client.connect();
 
-		System.out.println("System starting ... ");
+                    stopstub = new RPCClientStopStub(client);
+                    TestBooleanBooleanStub boolboolstub = new TestBooleanBooleanStub(client);
 
-		try {
+                    // boolean test case
 
-			serverthread.start();
-			clientthread.start();
+                    boolean testb = true;
+                    boolean resb = boolboolstub.m(testb);
 
-			serverthread.join();
-			clientthread.join();
+                    assertEquals(!testb, resb);
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		} finally {
+                    testb = false;
+                    resb = boolboolstub.m(testb);
+                    assertEquals(!testb, resb);
 
-			System.out.println("System stopping ... ");
-			
-			if (failure.get()) {
-				fail();
-			}
-		}
-	}
+                    stopstub.stop();
 
-	@Test
-	@Order(6)
-	public void testAllCalls() {
+                    client.disconnect();
 
-		RPCClient client = new RPCClient(SERVER, PORT);
-		RPCServer server = new RPCServer(PORT);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    failure.set(true);
+                }
+            }
+        };
 
-		AtomicBoolean failure = new AtomicBoolean(false);
-		
-		Thread serverthread = new Thread() {
+        System.out.println("System starting ... ");
 
-			public void run() {
+        try {
 
-				try {
-					TestVoidVoidImpl voidvoidimpl = new TestVoidVoidImpl((byte) 1, server);
-					TestStringStringImpl stringstringimpl = new TestStringStringImpl((byte) 2, server);
-					TestIntIntImpl intintimpl = new TestIntIntImpl((byte) 3, server);
-					TestBooleanBooleanImpl boolboolimpl = new TestBooleanBooleanImpl((byte) 4, server);
+            serverthread.start();
+            clientthread.start();
 
-					server.run();
-				} catch (Exception e) {
-					e.printStackTrace();
-					failure.set(true);
-				} finally {
-					server.stop();
-				}
-			}
-		};
+            serverthread.join();
+            clientthread.join();
 
-		Thread clientthread = new Thread() {
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        } finally {
 
-			public void run() {
+            System.out.println("System stopping ... ");
 
-				try {
-					client.connect();
+            if (failure.get()) {
+                fail();
+            }
+        }
+    }
 
-					RPCClientStopStub stopstub = new RPCClientStopStub(client);
-					TestVoidVoidStub voidvoidstub = new TestVoidVoidStub(client);
-					TestStringStringStub stringstringstub = new TestStringStringStub(client);
-					TestIntIntStub intintstub = new TestIntIntStub(client);
-					TestBooleanBooleanStub boolboolstub = new TestBooleanBooleanStub(client);
+    @Test
+    @Order(6)
+    public void testAllCalls() {
 
-					// void test case
-					voidvoidstub.m();
+        RPCClient client = new RPCClient(SERVER, PORT);
+        RPCServer server = new RPCServer(PORT);
 
-					// string test case
-					String teststr = "string";
-					String resstr = stringstringstub.m(teststr);
+        AtomicBoolean failure = new AtomicBoolean(false);
 
-					assertEquals(teststr + teststr, resstr);
+        Thread serverthread = new Thread() {
 
-					// int test case
-					int x = 42;
-					int resx = intintstub.m(x);
+            public void run() {
 
-					assertEquals(x, resx);
-					// boolean test case
+                try {
+                    TestVoidVoidImpl voidvoidimpl = new TestVoidVoidImpl((byte) 1, server);
+                    TestStringStringImpl stringstringimpl = new TestStringStringImpl((byte) 2, server);
+                    TestIntIntImpl intintimpl = new TestIntIntImpl((byte) 3, server);
+                    TestBooleanBooleanImpl boolboolimpl = new TestBooleanBooleanImpl((byte) 4, server);
 
-					boolean testb = true;
-					boolean resb = boolboolstub.m(testb);
+                    server.run();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    failure.set(true);
+                } finally {
+                    server.stop();
+                }
+            }
+        };
 
-					assertEquals(!testb, resb);
+        Thread clientthread = new Thread() {
 
-					testb = false;
-					resb = boolboolstub.m(testb);
-					assertEquals(!testb, resb);
+            public void run() {
 
-					stopstub.stop();
+                try {
+                    client.connect();
 
-					client.disconnect();
-				} catch (Exception e) {
-					e.printStackTrace();
-					failure.set(true);
-				}
+                    RPCClientStopStub stopstub = new RPCClientStopStub(client);
+                    TestVoidVoidStub voidvoidstub = new TestVoidVoidStub(client);
+                    TestStringStringStub stringstringstub = new TestStringStringStub(client);
+                    TestIntIntStub intintstub = new TestIntIntStub(client);
+                    TestBooleanBooleanStub boolboolstub = new TestBooleanBooleanStub(client);
 
-			}
-		};
+                    // void test case
+                    voidvoidstub.m();
 
-		System.out.println("System starting ... ");
+                    // string test case
+                    String teststr = "string";
+                    String resstr = stringstringstub.m(teststr);
 
-		try {
+                    assertEquals(teststr + teststr, resstr);
 
-			serverthread.start();
-			clientthread.start();
+                    // int test case
+                    int x = 42;
+                    int resx = intintstub.m(x);
 
-			serverthread.join();
-			clientthread.join();
+                    assertEquals(x, resx);
+                    // boolean test case
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		} finally {
+                    boolean testb = true;
+                    boolean resb = boolboolstub.m(testb);
 
-			System.out.println("System stopping ... ");
-			
-			if (failure.get()) {
-				fail();
-			}
-		}
-	}
+                    assertEquals(!testb, resb);
+
+                    testb = false;
+                    resb = boolboolstub.m(testb);
+                    assertEquals(!testb, resb);
+
+                    stopstub.stop();
+
+                    client.disconnect();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    failure.set(true);
+                }
+
+            }
+        };
+
+        System.out.println("System starting ... ");
+
+        try {
+
+            serverthread.start();
+            clientthread.start();
+
+            serverthread.join();
+            clientthread.join();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        } finally {
+
+            System.out.println("System stopping ... ");
+
+            if (failure.get()) {
+                fail();
+            }
+        }
+    }
 }

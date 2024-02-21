@@ -8,75 +8,85 @@ import java.net.Socket;
 
 import no.hvl.dat110.TODO;
 
-
 public class MessageConnection {
 
-	private DataOutputStream outStream; // for writing bytes to the underlying TCP connection
-	private DataInputStream inStream; // for reading bytes from the underlying TCP connection
-	private Socket socket; // socket for the underlying TCP connection
-	
-	public MessageConnection(Socket socket) {
+    private DataOutputStream outStream; // for writing bytes to the underlying TCP connection
+    private DataInputStream inStream; // for reading bytes from the underlying TCP connection
+    private Socket socket; // socket for the underlying TCP connection
 
-		try {
+    public MessageConnection(Socket socket) {
 
-			this.socket = socket;
+        try {
 
-			outStream = new DataOutputStream(socket.getOutputStream());
+            this.socket = socket;
 
-			inStream = new DataInputStream (socket.getInputStream());
+            outStream = new DataOutputStream(socket.getOutputStream());
 
-		} catch (IOException ex) {
+            inStream = new DataInputStream(socket.getInputStream());
 
-			System.out.println("Connection: " + ex.getMessage());
-			ex.printStackTrace();
-		}
-	}
+        } catch (IOException ex) {
 
-	public void send(Message message) {
+            System.out.println("Connection: " + ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
 
-		byte[] data;
-		
-		// TODO - START
-		// encapsulate the data contained in the Message and write to the output stream
-		
-		if (true)
-			throw new UnsupportedOperationException(TODO.method());
-			
-		// TODO - END
+    public void send(Message message) {
 
-	}
+        byte[] data = null;
 
-	public Message receive() {
+        // TODO - START
+        // encapsulate the data contained in the Message and write to the output stream
+        try {
+            outStream.write(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // if (true)
+        //   throw new UnsupportedOperationException(TODO.method());
 
-		Message message = null;
-		byte[] data;
-		
-		// TODO - START
-		// read a segment from the input stream and decapsulate data into a Message
-		
-		if (true)
-			throw new UnsupportedOperationException(TODO.method());
-		
-		// TODO - END
-		
-		return message;
-		
-	}
+        // TODO - END
 
-	// close the connection by closing streams and the underlying socket	
-	public void close() {
+    }
 
-		try {
-			
-			outStream.close();
-			inStream.close();
+    public Message receive() {
 
-			socket.close();
-			
-		} catch (IOException ex) {
+        Message message = null;
+        byte[] data = new byte[MessageUtils.SEGMENTSIZE];
 
-			System.out.println("Connection: " + ex.getMessage());
-			ex.printStackTrace();
-		}
-	}
+        // TODO - START
+        // read a segment from the input stream and decapsulate data into a Message
+
+        try {
+            inStream.read(data);
+            message = MessageUtils.decapsulate(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return message;
+    }
+
+
+    //if (true)
+    //	throw new UnsupportedOperationException(TODO.method());
+
+    // TODO - END
+
+
+    // close the connection by closing streams and the underlying socket
+    public void close() {
+
+        try {
+
+            outStream.close();
+            inStream.close();
+
+            socket.close();
+
+        } catch (IOException ex) {
+
+            System.out.println("Connection: " + ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
 }

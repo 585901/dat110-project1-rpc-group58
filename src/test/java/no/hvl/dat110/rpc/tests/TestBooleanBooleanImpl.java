@@ -6,23 +6,23 @@ import no.hvl.dat110.rpc.RPCServer;
 
 public class TestBooleanBooleanImpl extends RPCRemoteImpl {
 
-	public TestBooleanBooleanImpl(byte rpcid, RPCServer rpcserver) {
-		super(rpcid,rpcserver);
-	}
-	
-	public byte[] invoke(byte[] request) {
+    public TestBooleanBooleanImpl(byte rpcid, RPCServer rpcserver) {
+        super(rpcid, rpcserver);
+    }
 
-		boolean b = RPCUtils.unmarshallBoolean(request);
+    public byte[] invoke(byte[] request) {
 
-		boolean resb = m(b);
+        boolean b = RPCUtils.unmarshallBoolean(request);
 
-		byte[] reply = RPCUtils.marshallBoolean(resb);
+        boolean resb = m(b);
 
-		return reply;
-	}
+        byte[] reply = RPCUtils.marshallBoolean(resb);
 
-	public boolean m(boolean b) {
-		System.out.println("boolean m(" + b + ") executed");
-		return (!b);
-	}
+        return reply;
+    }
+
+    public boolean m(boolean b) {
+        System.out.println("boolean m(" + b + ") executed");
+        return (!b);
+    }
 }

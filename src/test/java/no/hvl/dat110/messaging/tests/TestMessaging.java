@@ -11,104 +11,105 @@ import no.hvl.dat110.messaging.Message;
 import no.hvl.dat110.messaging.MessageUtils;
 import no.hvl.dat110.messaging.MessagingClient;
 import no.hvl.dat110.messaging.MessagingServer;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TestMessaging {
 
-	@Test
-	public void test() {
+    @Test
+    public void test() {
 
-		byte[] clientsent = { 1, 2, 3, 4, 5 };
+        byte[] clientsent = {1, 2, 3, 4, 5};
 
-		AtomicBoolean failure = new AtomicBoolean(false);
+        AtomicBoolean failure = new AtomicBoolean(false);
 
-		Thread server = new Thread() {
+        Thread server = new Thread() {
 
-			public void run() {
+            public void run() {
 
-				MessagingServer server = null;
+                MessagingServer server = null;
 
-				try {
+                try {
 
-					System.out.println("Messaging server - start");
+                    System.out.println("Messaging server - start");
 
-					server = new MessagingServer(MessageUtils.MESSAGINGPORT);
+                    server = new MessagingServer(MessageUtils.MESSAGINGPORT);
 
-					MessageConnection connection = server.accept();
+                    MessageConnection connection = server.accept();
 
-					Message request = connection.receive();
+                    Message request = connection.receive();
 
-					byte[] serverreceived = request.getData();
+                    byte[] serverreceived = request.getData();
 
-					Message reply = new Message(serverreceived);
+                    Message reply = new Message(serverreceived);
 
-					connection.send(reply);
+                    connection.send(reply);
 
-					connection.close();
+                    connection.close();
 
-					assertTrue(Arrays.equals(clientsent, serverreceived));
+                    assertTrue(Arrays.equals(clientsent, serverreceived));
 
-				} catch (Exception e) {
-					e.printStackTrace();
-					failure.set(true);
-				} finally {
-					server.stop();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    failure.set(true);
+                } finally {
+                    server.stop();
 
-					System.out.println("Messaging server - stop");
-				}
+                    System.out.println("Messaging server - stop");
+                }
 
-			}
-		};
+            }
+        };
 
-		Thread client = new Thread() {
+        Thread client = new Thread() {
 
-			public void run() {
+            public void run() {
 
-				try {
+                try {
 
-					System.out.println("Messaging client - start");
+                    System.out.println("Messaging client - start");
 
-					MessagingClient client = new MessagingClient(MessageUtils.MESSAGINGHOST,
-							MessageUtils.MESSAGINGPORT);
+                    MessagingClient client = new MessagingClient(MessageUtils.MESSAGINGHOST,
+                            MessageUtils.MESSAGINGPORT);
 
-					MessageConnection connection = client.connect();
+                    MessageConnection connection = client.connect();
 
-					Message message1 = new Message(clientsent);
+                    Message message1 = new Message(clientsent);
 
-					connection.send(message1);
+                    connection.send(message1);
 
-					Message message2 = connection.receive();
+                    Message message2 = connection.receive();
 
-					byte[] clientreceived = message2.getData();
+                    byte[] clientreceived = message2.getData();
 
-					connection.close();
+                    connection.close();
 
-					System.out.println("Messaging client - stop");
+                    System.out.println("Messaging client - stop");
 
-					assertTrue(Arrays.equals(clientsent, clientreceived));
-				} catch (Exception e) {
-					e.printStackTrace();
-					failure.set(true);
-				}
-			}
+                    assertTrue(Arrays.equals(clientsent, clientreceived));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    failure.set(true);
+                }
+            }
 
-		};
+        };
 
-		try {
-			server.start();
-			client.start();
+        try {
+            server.start();
+            client.start();
 
-			server.join();
-			client.join();
+            server.join();
+            client.join();
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		} finally {
-			if (failure.get()) {
-				fail();
-			}
-		}
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        } finally {
+            if (failure.get()) {
+                fail();
+            }
+        }
 
-	}
+    }
 }

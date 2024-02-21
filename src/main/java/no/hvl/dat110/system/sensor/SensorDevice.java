@@ -5,19 +5,19 @@ import no.hvl.dat110.system.controller.Common;
 
 public class SensorDevice {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-		System.out.println("Sensor server starting ...");
-		
-		RPCServer sensorserver = new RPCServer(Common.SENSORPORT);
+        System.out.println("Sensor server starting ...");
 
-		SensorImpl sensor = new SensorImpl((byte)Common.READ_RPCID,sensorserver);
-		
-		sensorserver.run();
-		
-		sensorserver.stop();
-		
-		System.out.println("Sensor server stopping ...");
-		
-	}
+        RPCServer sensorserver = new RPCServer(Common.SENSORPORT);
+
+        SensorImpl sensor = new SensorImpl((byte) Common.READ_RPCID, sensorserver);
+
+        sensorserver.run();
+
+        sensorserver.stop();
+
+        System.out.println("Sensor server stopping ...");
+
+    }
 }
