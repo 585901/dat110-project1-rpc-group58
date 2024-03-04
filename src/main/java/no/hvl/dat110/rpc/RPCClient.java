@@ -1,17 +1,12 @@
 package no.hvl.dat110.rpc;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
 import no.hvl.dat110.TODO;
 import no.hvl.dat110.messaging.*;
 
 public class RPCClient {
 
-
     // underlying messaging client used for RPC communication
     private MessagingClient msgclient;
-    //private Connection c;
 
     // underlying messaging connection used for RPC communication
     private MessageConnection connection;
@@ -25,10 +20,9 @@ public class RPCClient {
 
         // TODO - START
         // connect using the RPC client
+
         connection = msgclient.connect();
 
-        //if (true)
-        //	throw new UnsupportedOperationException(TODO.method());
 
         // TODO - END
     }
@@ -37,15 +31,10 @@ public class RPCClient {
 
         // TODO - START
         // disconnect by closing the underlying messaging connection
+
         connection.close();
 
-        //if (true)
-        //	throw new UnsupportedOperationException(TODO.method());
-
         // TODO - END
-        if (true)
-            throw new UnsupportedOperationException(TODO.method());
-
     }
 
 	/*
@@ -57,16 +46,10 @@ public class RPCClient {
 
     public byte[] call(byte rpcid, byte[] param) {
 
+        byte[] returnval = null;
 
         // TODO - START
-        byte[] returnval = RPCUtils.encapsulate(rpcid, param);
-        Message msg = new Message(returnval);
 
-        connection.send(msg);
-
-        Message reply = connection.receive();
-
-        returnval = reply.getData();
 		/*
 
 		The rpcid and param must be encapsulated according to the RPC message format
@@ -75,12 +58,17 @@ public class RPCClient {
 
 		*/
 
+        byte[] request = RPCUtils.encapsulate(rpcid, param);
 
-        return returnval;
+        Message message = new Message(request);
+        connection.send(message);
+
+        Message recMes = connection.receive();
+        returnval = recMes.getData();
 
 
         // TODO - END
-
+        return returnval;
 
     }
 

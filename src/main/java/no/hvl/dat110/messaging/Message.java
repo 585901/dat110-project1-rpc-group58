@@ -11,19 +11,16 @@ public class Message {
     public Message(byte[] data) {
 
         // TODO - START
-        if (data != null && data.length < MessageUtils.SEGMENTSIZE) {
+
+        if (data.length < 128 && data != null) {
             this.data = data;
-        } else {
-            System.out.println("Too many bytes");
+
         }
-        //if (true)
-        //  throw new UnsupportedOperationException(TODO.constructor("Message"));
 
     }
-
-    // TODO - END
 
     public byte[] getData() {
         return this.data;
     }
+
 }

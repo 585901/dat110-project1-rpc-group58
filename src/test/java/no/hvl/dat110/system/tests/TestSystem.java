@@ -1,5 +1,6 @@
 package no.hvl.dat110.system.tests;
 
+import static no.hvl.dat110.system.controller.Controller.main;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
@@ -53,7 +54,7 @@ class TestSystem {
             public void run() {
 
                 try {
-                    Controller.main(null);
+                    main(null);
                 } catch (Exception e) {
                     e.printStackTrace();
                     failure.set(true);

@@ -8,7 +8,7 @@ public class MessageUtils {
 
     public static final int SEGMENTSIZE = 128;
 
-    public static int MESSAGINGPORT = 80;
+    public static int MESSAGINGPORT = 8080;
     public static String MESSAGINGHOST = "localhost";
 
     public static byte[] encapsulate(Message message) {
@@ -18,49 +18,46 @@ public class MessageUtils {
 
         // TODO - START
 
+
+        if (message != null) {
+            data = message.getData();
+            int datalength = data.length;
+            segment = new byte[128];
+            segment[0] = (byte) datalength;
+            for (int i = 0; i < data.length; i++) {
+                segment[i + 1] = data[i];
+            }
+        }
+
         // encapulate/encode the payload data of the message and form a segment
         // according to the segment format for the messaging layer
 
 
         // TODO - END
-        segment = new byte[SEGMENTSIZE];
-        data = message.getData();
-        segment[0] = (byte) data.length;
-        for (int i = 1; i < data.length + 1; i++) {
-            segment[i] = data[i - 1];
-        }
-
-        // if (true)
-        //   throw new UnsupportedOperationException(TODO.method());
-
-
         return segment;
-
 
     }
 
     public static Message decapsulate(byte[] segment) {
 
+        Message message = null;
 
         // TODO - START
         // decapsulate segment and put received payload data into a message
 
 
-        // TODO - END
-        byte[] data = new byte[segment[0]];
-        for (int i = 0; i < data.length; i++) {
-            data[i] = segment[i + 1];
+        int messageLength = segment[0];
+        byte[] nyByte = new byte[messageLength];
+        for (int i = 0; i < messageLength; i++) {
+            nyByte[i] = segment[i + 1];
+
         }
-
-        //if (true)
-        //  throw new UnsupportedOperationException(TODO.method());
+        message = new Message(nyByte);
 
 
-        Message message = new Message(data);
-
+        // TODO - END
 
         return message;
-
 
     }
 

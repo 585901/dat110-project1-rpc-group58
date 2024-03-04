@@ -23,21 +23,24 @@ public class MessagingClient {
     public MessageConnection connect() {
 
         // client-side socket for underlying TCP connection to messaging server
-        Socket clientSocket = null;
-        try {
-            clientSocket = new Socket(server, port);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Socket clientSocket;
 
-        MessageConnection connection = new MessageConnection(clientSocket);
+        MessageConnection connection = null;
 
         // TODO - START
         // connect to messaging server using a TCP socket
         // create and return a corresponding messaging connection
 
-        //if (true)
-          //  throw new UnsupportedOperationException(TODO.method());
+        try {
+
+            clientSocket = new Socket(server, port);
+            connection = new MessageConnection(clientSocket);
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         // TODO - END
         return connection;
